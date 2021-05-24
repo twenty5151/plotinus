@@ -33,33 +33,68 @@ class Plotinus.CommandExtractor : Object {
 
     this.window = window;
 
-    if (application != null && application.app_menu != null) {
-      foreach (var command in get_menu_model_commands(application.app_menu, {application_name})) {
-        commands += command;
-      }
+    var widgets = window.get_children();
+    if (widgets.length() > 0) {
+        // Assumes all windows have one immediate child
+        var container = widgets.first().data as Gtk.Container;
+        foreach (var command in get_button_commands(container)) {
+            commands += command;
+        }
     }
 
-    if (application != null && application.menubar != null) {
-      foreach (var command in get_menu_model_commands(application.menubar, {})) {
-        commands += command;
-      }
-    } else {
-      var menu_bar = find_widget(window, typeof(Gtk.MenuBar)) as Gtk.MenuBar;
-      if (menu_bar != null) {
-        foreach (var command in get_menu_shell_commands(menu_bar, {})) {
-          commands += command;
+//    if (application != null && application.app_menu != null) {
+//      foreach (var command in get_menu_model_commands(application.app_menu, {application_name})) {
+//        commands += command;
+//      }
+//    }
+//
+//    if (application != null && application.menubar != null) {
+//      foreach (var command in get_menu_model_commands(application.menubar, {})) {
+//        commands += command;
+//      }
+//    } else {
+//      var menu_bar = find_widget(window, typeof(Gtk.MenuBar)) as Gtk.MenuBar;
+//      if (menu_bar != null) {
+//        foreach (var command in get_menu_shell_commands(menu_bar, {})) {
+//          commands += command;
+//        }
+//      }
+//    }
+//
+//    var titlebar = window.get_titlebar() as Gtk.Container;
+//    if (titlebar != null) {
+//      var window_title = get_window_title(window) ?? "Window";
+//      foreach (var command in get_container_commands(titlebar, {window_title}, true)) {
+//        commands += command;
+//      }
+//    }
+
+    return commands;
+  }
+
+  private Command[] get_button_commands(Gtk.Container container) {
+    Command[] commands = {};
+
+    container.foreach((widget) => {
+      if (!widget.is_sensitive() || !widget.get_visible() || (!widget.is_visible()))
+        return;
+
+      if (widget is Gtk.Button) {
+        //print("%s\n", widget.get_name());
+        var button = widget as Gtk.Button;
+        var widget_name = widget.get_name();
+        var label = get_button_label(button);
+        if (widget_name != label && widget_name != "") {
+            label = label + " (" + widget_name + ")";
+        }
+        commands += new ButtonCommand({}, label, {}, button);
+
+      } else if (widget is Gtk.Container) {
+        foreach (var command in get_button_commands(widget as Gtk.Container)) {
+            commands += command;
         }
       }
-    }
-
-    var titlebar = window.get_titlebar() as Gtk.Container;
-    if (titlebar != null) {
-      var window_title = get_window_title(window) ?? "Window";
-      foreach (var command in get_container_commands(titlebar, {window_title}, true)) {
-        commands += command;
-      }
-    }
-
+    });
     return commands;
   }
 
