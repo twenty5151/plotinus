@@ -2,7 +2,7 @@
 
 This fork of plotinus replaces menu bar items with buttons in the current GTK application window. The default keyboard shortcut is changed to Super-h so you can still use the original plotinus (though the names have to be changed..). Qalculate-gtk example:
 
-![new](screenshot.png)
+<img src=screenshot.png height="400">
 
 # Original
 
