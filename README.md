@@ -1,3 +1,11 @@
+# Fork
+
+This fork of plotinus replaces menu bar items with buttons in the current GTK application window. The default keyboard shortcut is changed to Super-h so you can still use the original plotinus (though the names have to be changed..). Qalculate-gtk example:
+
+![new](screenshot.png)
+
+# Original
+
 > Only a compound can be beautiful, never anything devoid of parts; and only a whole;<br>
 > the several parts will have beauty, not in themselves,<br>
 > but only as working together to give a comely total.<br>
